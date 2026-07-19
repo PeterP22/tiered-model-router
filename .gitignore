@@ -1,0 +1,11 @@
+# data & caches (regenerate with scripts/prepare_data.py)
+data/
+*.npy
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# large artifacts — eval.json and curves are committed, model weights are not
+artifacts/**/*.joblib
