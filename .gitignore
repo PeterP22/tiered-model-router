@@ -9,3 +9,4 @@ __pycache__/
 
 # large artifacts — eval.json and curves are committed, model weights are not
 artifacts/**/*.joblib
+.env
