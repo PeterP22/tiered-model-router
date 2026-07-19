@@ -25,10 +25,22 @@ from pathlib import Path
 import pandas as pd
 from dotenv import load_dotenv
 
-from router.grade import grade_gsm8k, grade_mmlu
+from router.grade import grade_gsm8k, grade_math, grade_mmlu
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
+
+
+def grader_for(source: str):
+    if source == "gsm8k":
+        return grade_gsm8k
+    if source.startswith("math"):
+        return grade_math
+    return grade_mmlu  # mmlu and mmlu-pro
+
+
+def max_tokens_for(source: str) -> int:
+    return 1024 if source.startswith("math") else 512
 
 
 def slug(model: str) -> str:
@@ -60,8 +72,8 @@ async def run_model(model: str, prompts: pd.DataFrame, runner, max_cost: float |
     async def one(row) -> None:
         if max_cost is not None and runner.total_cost >= max_cost:
             raise CostCapReached
-        text, usage, cost = await runner.complete(model, row.prompt)
-        grader = grade_gsm8k if row.source == "gsm8k" else grade_mmlu
+        text, usage, cost = await runner.complete(model, row.prompt, max_tokens_for(row.source))
+        grader = grader_for(row.source)
         rec = {
             "id": row.id, "model": model, "correct": bool(grader(text, row.gold)),
             "output": text, "usage": usage, "cost_usd": cost,
@@ -90,11 +102,13 @@ async def main() -> None:
     ap.add_argument("--cheap", default="claude-haiku-4-5")
     ap.add_argument("--strong", default="claude-opus-4-8")
     ap.add_argument("--provider", choices=["anthropic", "openrouter"], default="anthropic")
+    ap.add_argument("--prompts-file", default="golden_prompts.parquet",
+                    help="parquet file in data/ to read prompts from")
     ap.add_argument("--limit", type=int, default=None, help="run only the first N prompts")
     ap.add_argument("--max-cost", type=float, default=None, help="hard USD cap for this session")
     args = ap.parse_args()
 
-    prompts = pd.read_parquet(DATA / "golden_prompts.parquet")
+    prompts = pd.read_parquet(DATA / args.prompts_file)
     if args.limit:
         # Take from every source so a smoke test exercises all graders.
         prompts = pd.concat(
