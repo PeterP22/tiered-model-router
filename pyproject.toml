@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.12"
 dependencies = [
+    "anthropic>=0.117.0",
     "datasets>=5.0.0",
     "httpx>=0.28.1",
     "joblib>=1.5.3",
