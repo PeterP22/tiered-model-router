@@ -27,7 +27,8 @@ def fit_bt_scores(battles: pd.DataFrame) -> dict[str, float]:
     X[rows, decisive["model_b"].map(idx)] = -1.0
     y = (decisive["winner"] == "model_a").astype(int).to_numpy()
 
-    lr = LogisticRegression(fit_intercept=False, penalty=None, max_iter=1000)
+    # Near-unpenalized (C large); sklearn 1.8 deprecated penalty=None.
+    lr = LogisticRegression(fit_intercept=False, C=1e6, max_iter=1000)
     lr.fit(X, y)
     return dict(zip(models, lr.coef_[0]))
 
