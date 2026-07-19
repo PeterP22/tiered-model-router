@@ -162,7 +162,9 @@ async def main() -> None:
         print(f"TOTAL SESSION COST: ${runner.total_cost:.4f}")
         return
     labels = pd.DataFrame(rows).merge(prompts, on="id")
-    labels.to_parquet(DATA / "golden_labels.parquet", index=False)
+    out_name = f"labels_{Path(args.prompts_file).stem}.parquet"
+    labels.to_parquet(DATA / out_name, index=False)
+    print(f"-> data/{out_name}")
 
     print(f"\nlabels written: {len(labels)}")
     print(f"cheap  ({args.cheap}) accuracy: {labels['cheap_correct'].mean():.3f}")

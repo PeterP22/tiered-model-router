@@ -1,0 +1,39 @@
+{
+  "n_test": 86,
+  "anchors": {
+    "always_cheap": {
+      "frac_strong": 0.0,
+      "quality": 0.7441860465116279,
+      "usd_per_prompt": 0.0025641162790697677
+    },
+    "always_strong": {
+      "frac_strong": 1.0,
+      "quality": 0.8837209302325582,
+      "usd_per_prompt": 0.0060583139534883725
+    }
+  },
+  "v1_embed_lr": {
+    "apgr": 0.7374,
+    "cpt_50": 0.174,
+    "cpt_80": 0.372,
+    "ece": 0.1852
+  },
+  "random": {
+    "apgr": 0.5543,
+    "cpt_50": 0.558,
+    "cpt_80": 0.721,
+    "ece": null
+  },
+  "length_heuristic": {
+    "apgr": 0.5688,
+    "cpt_50": 0.302,
+    "cpt_80": 0.721,
+    "ece": null
+  },
+  "tier_rule_baseline": {
+    "frac_strong": 0.6279,
+    "quality": 0.8721,
+    "usd_per_prompt": 0.0053,
+    "pgr": 0.9167
+  }
+}
