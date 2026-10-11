@@ -1,5 +1,7 @@
 # tiered-model-router
 
+> **TL;DR:** a small learned router that sends each query to Claude Haiku 4.5 or Claude Opus 4.8. On held-out prompts it reaches AUC 0.71 and APGR 0.74 (random: 0.55), for $5.32 total API spend. Why it matters: most queries don't need the most capable model, and knowing *which* ones is the whole game.
+
 Training a small router that predicts, per query, whether a cheap LLM can handle it or it needs an expensive one — then routing accordingly. Goal: frontier-quality answers at a fraction of the cost, with calibration and cost/quality tradeoff curves to prove it (or honest curves showing where it fails).
 
 **Status: work in progress.** v0 (preference labels) failed honestly; v1 (correctness labels, live 2026 models: **Claude Haiku 4.5 vs Claude Opus 4.8**) works: same architecture, AUC 0.51 → 0.71, APGR 0.74 vs 0.55 random. Every number in this README comes from a run in this repo — no invented metrics. Total API spend so far: **$5.32**.
@@ -128,3 +130,7 @@ uv run python scripts/train_v1.py && uv run python scripts/eval_v1.py
 - Arena preference labels are noisy and 2024-era; tier assignment is derived from this dataset's battles, not the global leaderboard — our "strong" class includes models a 2026 reader wouldn't call strong.
 - Dropping ties discards 31% of the data, including exactly the "both fine" cases a router would love to send cheap.
 - The offline quality proxy ("did the routed side win the human battle") inherits all the noise above; it can rank routers but the absolute numbers shouldn't be quoted as product claims.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
