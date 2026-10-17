@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Tests only import numpy, pandas, scikit-learn and matplotlib; skip torch-heavy deps.
+      - run: pip install numpy pandas scikit-learn matplotlib pytest
+      - run: python -m pytest -q
+        env:
+          PYTHONPATH: src
